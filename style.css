@@ -1,0 +1,108 @@
+body{
+    display: grid;
+    place-items: center;
+    height: 100vh;
+    margin: 0;
+    background: radial-gradient(#8fd16f, #4c9a3c);
+    font-family: system-ui;
+}
+
+.game{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    counter-reset: score;
+}
+
+.board{
+    display: grid;
+    grid-template-columns: repeat(3, 120px);
+    gap: 18px 30px;
+}
+
+.hole{
+    position: relative;
+    height: 120px;
+    overflow: hidden;
+}
+
+/* the dirt hole */
+.hole::before{
+    content: '';
+    position: absolute;
+    inset: auto 0 0;
+    height: 34px;
+    border-radius: 50%;
+    background: #3b2a1a;
+}
+
+/* the mole */
+label{
+    position: absolute;
+    left: 22px;
+    bottom: 10px;
+    width: 76px;
+    height: 92px;
+    border-radius: 38px 38px 14px 14px;
+    background: radial-gradient(circle at 34% 32%, #111111 5px, #0000 6px),
+                radial-gradient(circle at 66% 32%, #111111 5px, #0000 6px),
+                radial-gradient(14px 10px at 50% 52%, #f472b6 98%, #0000), #8b5a2b;
+    cursor: pointer;
+    animation: peek 2.6s ease-in-out infinite calc(var(--d) * -1s);
+}
+
+@keyframes peek{
+    0%, 100% {translate: 0 110%;}
+    30%, 65% {translate: 0 0;}
+}
+
+input{
+    appearance: none;
+    margin: 0;
+}
+
+/* whacked! */
+input:checked{counter-increment: score;}
+
+label:has(:checked){
+    filter: grayscale(1);
+    animation: bonk .5s forwards;
+}
+
+@keyframes bonk{
+    from {translate: 0 0; scale: 1.15 .8;}
+    to {translate: 0 110%;}
+}
+
+.hole:has(:checked)::after{
+    content: '+1';
+    position: absolute;
+    left: 50%;
+    top: 10px;
+    translate: -50%;
+    color: #ffff;
+    font: 800 30px system-ui;
+    animation: up .8s forwards;
+}
+
+@keyframes up{
+    to {opacity: 0; translate: -50% -40px;}
+}
+
+.score{
+    order: -1;
+    margin: 0 0 18px;
+    color: #ffff;
+    font-size: 34px;
+    font-weight: 800;
+    text-shadow: 0 3px 0 #2d6b22;
+}
+
+.score::after{
+    content: 'Score: ' counter(score);
+}
+
+.game:not(:has(input:not(:checked)))
+.score::after{
+    content: 'You Win! ' counter(score);
+}
